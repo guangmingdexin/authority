@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authority.dao.mapper.menu.MenuMapper">
+
+<!--    获取所有菜单以及对应的角色-->
+    <select id="getAllMenus" resultType="Menu">
+        select * from menu where del = 1;
+    </select>
+
+
+<!--    根据 menu_id 查询所有角色-->
+    <resultMap id="MenuToRole" type="MenuToRole">
+        <id property="menuId" column="menu_id"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="menuPatten" column="menu_patten"/>
+        <collection property="roles" ofType="Role">
+<!--            <result property="roleId" column="role_id"/>-->
+            <result property="roleName" column="role_name"/>
+<!--            <result property="roleState" column="role_state"/>-->
+        </collection>
+    </resultMap>
+    <select id="getAllMenusToRole" resultMap="MenuToRole">
+        SELECT DISTINCT m.*, r.* from menu m LEFT JOIN menu_role mr on m.menu_id = mr.menu_id LEFT JOIN role r on r.role_id = mr.role_id
+        where m.del = 1 and r.del = 1
+    </select>
+
+<!--    根据 id 查询权限-->
+    <select id="getMenuById" resultType="Menu" parameterType="String">
+        select * from menu where menu_id = #{menuId} and del = 1
+    </select>
+
+<!--    增加权限-->
+    <insert id="createMenu" parameterType="Menu">
+        insert into menu(menu_id, menu_patten, menu_name, menu_type, menu_describe, create_time)
+        values
+        (#{menuId}, #{menuPatten}, #{menuName}, #{menuType}, #{menuDescribe}, #{createTime})
+    </insert>
+
+<!--    更新 权限-->
+    <update id="updateMenu" parameterType="Menu">
+        update menu set menu_patten = #{menuPatten}, menu_name = #{menuName},
+        menu_type = #{menuType}, menu_describe = #{menuDescribe}
+        where menu_id = #{menuId} and del = 1
+    </update>
+
+<!--    删除权限-->
+    <update id="delMenu">
+        update menu set del = 0 where
+        menu_id in (
+        <foreach collection="list" separator="," item="id">
+            #{id}
+        </foreach>
+        )
+    </update>
+</mapper>

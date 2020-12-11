@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authority.dao.mapper.admin.AdminUserMapper">
+
+<!--    更加用户名查找用户-->
+    <select id="loadUserByUsername" parameterType="string" resultType="Admin">
+        select * from admin where user_name = #{userName}
+    </select>
+
+<!--    根据用户 id 查询 角色-->
+    <select id="getRoles" parameterType="string" resultType="Role">
+        select * from role where role_id in (select  role_id from admin_role where admin_id = #{adminId})
+    </select>
+
+</mapper>

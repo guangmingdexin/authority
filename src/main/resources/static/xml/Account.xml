@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authority.dao.mapper.account.AccountMapper">
+
+<!--    根据账户名查找用户-->
+<select id="loadUserByUsername" parameterType="string" resultType="Account">
+    select * from account where username = #{username} and del = 1
+</select>
+
+<!--    获取所有用户-->
+
+    <select id="getAllAccount" resultType="Account">
+        select user_id, username, email, state, avatar,create_time, tel from account where del = 1;
+    </select>
+
+<!--    根据用户 id 查询 角色-->
+<select id="getRoles" parameterType="string" resultType="Role">
+    select * from role where role_id in (select  role_id from account_role where user_id = #{accountId}) and del = 1
+</select>
+    
+    <select id="getAccount" resultType="Account">
+        select * from account where user_id = #{accountId} and del = 1;
+    </select>
+
+<!--    创建用户-->
+    <insert id="createAccount" parameterType="Account">
+        insert into account(user_id, username, password, email, state, create_time, avatar, tel)
+        values (#{userId}, #{userName}, #{password}, #{email}, #{userState},  #{createTime}, #{avatar}, #{tel})
+    </insert>
+
+    <!--    插入账户应的角色-->
+    <insert id="batchInsertAccountRole" >
+        insert into account_role(user_id, role_id)
+        values
+        <foreach collection="rIds" item="roleId" separator=",">
+            (#{accountId}, #{roleId})
+        </foreach>
+    </insert>
+
+<!--    更新用户-->
+    <update id="updateAccount" parameterType="Account">
+        update account set username = #{userName}, state = #{userState} where user_id = #{userId} and del = 1
+    </update>
+
+<!--    删除用户-->
+    <update id="delAccount">
+        update account set del = 0 where user_id in (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+</mapper>

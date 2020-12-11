@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.authority.dao.mapper.role.RoleMapper">
+
+<!--    获取所有角色 -->
+    <select id="getAllRoles" resultType="Role">
+        select * from role where del = 1
+    </select>
+
+<!--    通过角色 获取权限-->
+    <resultMap id="RoleToMenu" type="RoleToMenu">
+        <id property="roleId" column="role_id"  />
+        <result property="roleName" column="role_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="roleState" column="role_state"/>
+        <result property="roleDescribe" column="role_describe"/>
+
+        <collection property="menus" ofType="Menu">
+            <result property="menuId" column="menu_id"/>
+            <result property="menuName" column="menu_name"/>
+            <result property="menuPatten" column="menu_patten"/>
+            <result property="menuType" column="menu_type"/>
+            <result property="menuDescribe" column="menu_describe"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="getRole" parameterType="string" resultMap="RoleToMenu">
+
+select r.role_id, r.role_name, r.create_time, r.role_state, r.role_describe, m.menu_id,
+m.menu_name, m.menu_patten, m.menu_type, m.menu_describe from role r, menu m where menu_id in
+(select menu_id from menu_role where role_id = #{roleId})
+and role_id = #{roleId} and r.del = 1 and m.del = 1
+
+    </select>
+
+<!--    创建角色-->
+    <insert id="createRole" parameterType="Role">
+        insert into role(role_id, role_name, create_time, role_state, role_describe)
+        values (#{roleId}, #{roleName}, #{createTime}, #{roleState}, #{roleDescribe})
+    </insert>
+
+<!--    插入角色对应的权限-->
+    <insert id="insertBatchRoleMenu" >
+        insert into menu_role(menu_id, role_id)
+        values
+        <foreach collection="mrIds" item="menuId" separator=",">
+            (#{menuId}, #{roleId})
+        </foreach>
+    </insert>
+
+<!--    修改角色-->
+    <update id="updateRole" parameterType="Role">
+        update role set role_name = #{roleName}, role_state = #{roleState}, role_describe = #{roleDescribe}
+        where role_id = #{roleId} and del = 1
+    </update>
+
+<!--    删除角色-->
+    <update id="delRole">
+        update role set del = 0 where role_id in (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+
+</mapper>
