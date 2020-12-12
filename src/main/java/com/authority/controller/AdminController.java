@@ -78,7 +78,7 @@ public class AdminController {
     @PostMapping("/admin/create_account")
     public HashMap<String, Object> createAccount(@RequestBody VoAccountRoleId params) {
         userService.createAccount(params.getAccount(), params.getrIds());
-        // userService.insertBatchAR(params.getAccount().getUserId(), params.getrIds());
+
         return Msg.setResult("200", null, "success");
     }
 
