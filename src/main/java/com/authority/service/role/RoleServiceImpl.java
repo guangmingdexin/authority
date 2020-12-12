@@ -35,7 +35,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional(rollbackFor = Exception.class, noRollbackFor = DuplicateKeyException.class)
-    public HashMap<String, Object> createRole(Role role) {
+    public HashMap<String, Object> createRole(Role role, List<String> mrIds) {
         // 1. 判断 role 是否为空
         if(role == null) {
             return Msg.setResult("400", null, "创建失败, 角色不能为空");
@@ -58,6 +58,8 @@ public class RoleServiceImpl implements RoleService {
                 roleMapper.createRole(role);
             }
         }
+
+        insertBatchRoleMenu(role.getRoleId(), mrIds);
         return Msg.setResult("200", role, "添加角色成功！");
 
     }

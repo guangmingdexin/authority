@@ -46,8 +46,8 @@ public class AdminController {
         Role role = params.getRole();
         List<String> mrIds = params.getMrIds();
         // 插入 role_menu
-        roleService.insertBatchRoleMenu(role.getRoleId(), mrIds);
-        return roleService.createRole(role);
+
+        return roleService.createRole(role, mrIds);
     }
 
     @GetMapping("/admin/roles/all")

@@ -22,7 +22,7 @@ public interface RoleService {
      * @param role
      * @return Msg
      */
-    HashMap<String, Object> createRole(Role role);
+    HashMap<String, Object> createRole(Role role, List<String> mrIds);
 
     /**
      * 更新角色
