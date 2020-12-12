@@ -70,7 +70,7 @@ public class AccountUserService implements UserDetailsService {
 
     @NonNull
     @Transactional(noRollbackFor = DuplicateKeyException.class, rollbackFor = Exception.class)
-    public void createAccount(Account account) {
+    public void createAccount(Account account, List<String> rIds) {
         // 首先判断 id 是否存在
         // 如果不存在，则自动生成 id
         if(account.getUserId() == null) {
@@ -90,6 +90,8 @@ public class AccountUserService implements UserDetailsService {
             account.setUserId(UUID.randomUUID().toString());
             accountMapper.createAccount(account);
         }
+
+        insertBatchAR(account.getUserId(), rIds);
     }
 
     @Transactional(noRollbackFor = DuplicateKeyException.class, rollbackFor = Exception.class)
