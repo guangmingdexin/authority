@@ -50,4 +50,6 @@ public interface AccountMapper {
      * @param accountId 账户 Id
      */
     void delAllRole(String accountId);
+
+    Account getAccountByName(String accountName);
 }

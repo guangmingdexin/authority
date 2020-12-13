@@ -1,10 +1,13 @@
 package com.authority.common.config.security;
 
 
+import com.authority.common.exception.AccessDenied;
 import com.authority.common.filter.JWTAccountAuthenticationFilter;
 import com.authority.common.filter.JWTAuthenticationFilter;
 import com.authority.common.filter.JWTAuthorizationFilter;
 import com.authority.common.provider.AccountAuthenticationProvider;
+import com.authority.common.utils.Msg;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +17,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author 光明的心
@@ -33,6 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AccountAuthenticationProvider provider;
+
+    @Autowired
+    private AccessDenied accessDenied;
     // 密码加密
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -77,26 +90,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .cors()
                 .and()
-                .exceptionHandling();
-        // .authenticationEntryPoint(new JWTAuthenticationEntryPoint());
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint())
+                .accessDeniedHandler(accessDenied);
 
     }
 
-
-
-
-    /**
-     * 配置地址栏不能识别 // 的情况
-     *
-     * @return
-     */
-    //  @Bean
-    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
-        StrictHttpFirewall firewall = new StrictHttpFirewall();
-        //此处可添加别的规则,目前只设置 允许双 //
-        firewall.setAllowUrlEncodedDoubleSlash(true);
-        return firewall;
-    }
 
     @Bean
     public FilterMetadataSource metadataSource() {
@@ -108,5 +107,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new MyAccessDesicionManager();
     }
 
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, e) -> {
+            response.getWriter().write(new ObjectMapper().writeValueAsString(Msg.setResult("403", null, "权限不足")));
+        };
+    }
 }
 

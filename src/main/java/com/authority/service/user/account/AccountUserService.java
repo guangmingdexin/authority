@@ -71,6 +71,7 @@ public class AccountUserService implements UserDetailsService {
     @NonNull
     @Transactional(noRollbackFor = DuplicateKeyException.class, rollbackFor = Exception.class)
     public void createAccount(Account account, List<String> rIds) {
+
         // 首先判断 id 是否存在
         // 如果不存在，则自动生成 id
         if(account.getUserId() == null) {
@@ -83,6 +84,7 @@ public class AccountUserService implements UserDetailsService {
             account.setAvatar("default");
         }
         try {
+
             account.setPassword(encoder.encode(account.getPassword()));
             accountMapper.createAccount(account);
         }catch (DuplicateKeyException key) {
@@ -140,5 +142,9 @@ public class AccountUserService implements UserDetailsService {
     @Transactional(rollbackFor = Exception.class)
     public void delAllRole(String accountId) {
         accountMapper.delAllRole(accountId);
+    }
+
+    public boolean isExistAccountName(String accountName) {
+        return accountMapper.getAccountByName(accountName) == null;
     }
 }

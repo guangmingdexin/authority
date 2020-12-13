@@ -5,9 +5,14 @@
 <mapper namespace="com.authority.dao.mapper.account.AccountMapper">
 
 <!--    根据账户名查找用户-->
-<select id="loadUserByUsername" parameterType="string" resultType="Account">
+<select id="loadUserByUsername" parameterType="string" resultMap="UserAccount">
     select * from account where username = #{username} and del = 1
 </select>
+
+<!--    更加用户名查找用户-->
+    <select id="getAccountByName" parameterType="String" resultType="Account">
+        select username from account where username = #{username}
+    </select>
 
 <!--    获取所有用户-->
     <resultMap id="UserAccount" type="Account">

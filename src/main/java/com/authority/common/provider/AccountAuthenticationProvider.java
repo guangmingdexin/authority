@@ -38,23 +38,21 @@ class AccountAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
-        String password = (String) authentication.getCredentials();
+        String password = authentication.getCredentials().toString();
         JwtUser userDetails = (JwtUser)accountUserService.loadUserByUsername(username);
-        System.out.println("后台的密码： " + userDetails.getPassword());
 
-        if(userDetails.getUsername() == null) {
+        if(userDetails.getUsername() == null || password == null || username == null) {
             throw new BadCredentialsException("用户名，密码错误！");
         }
 
         userDetailsChecker.check(userDetails);
-
-        if(username.equals(userDetails.getUsername()) &&
-                passwordEncoder.encode(password).equals(userDetails.getPassword())) {
+        if(passwordEncoder.matches(password, userDetails.getPassword())) {
             // 用户名 密码验证成功
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             return new AccountAuthenticationToken(userDetails, password, authorities);
 
         }else {
+            System.out.println("密码不匹配！");
             throw new BadCredentialsException("用户名或者密码错误");
         }
 

@@ -79,9 +79,13 @@ public class AdminController {
 
     @PostMapping("/admin/create_account")
     public HashMap<String, Object> createAccount(@RequestBody VoAccountRoleId params) {
+        System.out.println(userService.isExistAccountName(params.getAccount().getUserName()));
+        if(!userService.isExistAccountName(params.getAccount().getUserName())) {
+            return Msg.setResult("400", params, "该账户名已经存在！");
+        }
         userService.createAccount(params.getAccount(), params.getrIds());
 
-        return Msg.setResult("200", null, "success");
+        return Msg.setResult("200", params, "success");
     }
 
     @GetMapping("/admin/account/all")
