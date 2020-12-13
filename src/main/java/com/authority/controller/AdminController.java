@@ -64,10 +64,12 @@ public class AdminController {
     }
 
     @PutMapping("/admin/role/id")
-    public HashMap<String, Object> updRole(@RequestBody Role role) {
-        roleService.updateRole(role);
-        return Msg.setResult("200", role, "success");
+    public HashMap<String, Object> updRole(@RequestBody VoRoleMenuId param) {
+        roleService.updateRole(param.getRole());
+        roleService.updRoleToMenu(param.getRole().getRoleId(), param.getMrIds());
+        return Msg.setResult("200", param, "success");
     }
+
 
     @DeleteMapping("/admin/role/ids")
     public HashMap<String, Object> delRoles(@RequestBody List<String> roleIds) {
@@ -93,9 +95,10 @@ public class AdminController {
     }
 
     @PutMapping("/admin/account/id")
-    public HashMap<String, Object> updAccount(@RequestBody Account account) {
-        userService.updAccount(account);
-        return Msg.setResult("200", account, "success");
+    public HashMap<String, Object> updAccount(@RequestBody VoAccountRoleId param) {
+        userService.updAccount(param.getAccount());
+        userService.updAccountToRole(param.getAccount().getUserId(), param.getrIds());
+        return Msg.setResult("200", param, "success");
     }
 
     @DeleteMapping("/admin/account/ids")

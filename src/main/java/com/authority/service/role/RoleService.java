@@ -48,4 +48,15 @@ public interface RoleService {
     RoleToMenu getRole(String roleId);
 
     void insertBatchRoleMenu(String roleId, List<String> mrIds);
+
+    /**
+     * 更新 角色-权限联系表
+     *
+     * @param roleId 角色 ID
+     * @param mrIds 角色新的权限
+     *
+     */
+    void updRoleToMenu(String roleId, List<String> mrIds);
+
+    void delAllMenu(String roleId);
 }

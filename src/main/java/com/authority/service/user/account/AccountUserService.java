@@ -120,11 +120,25 @@ public class AccountUserService implements UserDetailsService {
         accountMapper.delAccount(accountIds);
     }
 
+
     public VoAccountRole getAccountRole(String accountId) {
         Account account = accountMapper.getAccount(accountId);
         account.setPassword(null);
         List<Role> roles = accountMapper.getRoles(accountId);
         return new VoAccountRole(account, roles);
 
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updAccountToRole(String accountId, List<String> rIds) {
+        // 删除所有角色
+        delAllRole(accountId);
+        // 插入新的联系
+        insertBatchAR(accountId, rIds);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void delAllRole(String accountId) {
+        accountMapper.delAllRole(accountId);
     }
 }

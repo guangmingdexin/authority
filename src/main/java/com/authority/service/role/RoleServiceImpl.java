@@ -110,4 +110,19 @@ public class RoleServiceImpl implements RoleService {
             roleMapper.insertBatchRoleMenu(roleId, mrIds);
         }
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updRoleToMenu(String roleId, List<String> mrIds) {
+        // 删除角色所有权限
+        delAllMenu(roleId);
+        // 更新
+        insertBatchRoleMenu(roleId, mrIds);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delAllMenu(String roleId) {
+        roleMapper.delAllMenu(roleId);
+    }
 }

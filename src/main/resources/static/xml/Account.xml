@@ -62,4 +62,9 @@
         )
     </update>
 
+<!--    删除用户所有角色-->
+    <delete id="delAllRole" parameterType="string">
+        delete from account_role where user_id = #{userId}
+    </delete>
+
 </mapper>

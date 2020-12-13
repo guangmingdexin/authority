@@ -5,6 +5,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 /**
@@ -17,11 +18,16 @@ import java.util.HashMap;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ExpiredJwtException.class)
-    public HashMap<String, Object> jwtExpired() {
-        System.out.println("token 过期了");
-        return Msg.setResult("403", null, "token 已过期！");
+
+    @ExceptionHandler(SQLException.class)
+    public HashMap<String, Object> sqlError() {
+        System.out.println("sql 操作错误！");
+        return Msg.setResult("402", null, "fail");
     }
 
-
+    @ExceptionHandler(NullPointerException.class)
+    public HashMap<String, Object> argNullError() {
+        System.out.println("参数不能为空");
+        return Msg.setResult("501", null, "fail");
+    }
 }

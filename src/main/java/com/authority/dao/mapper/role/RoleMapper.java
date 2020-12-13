@@ -65,4 +65,13 @@ public interface RoleMapper {
      * @param mrIds  menu_id的集合
      */
     void insertBatchRoleMenu(@Param("roleId") String roleId, @Param("mrIds") List<String> mrIds);
+
+
+
+    /**
+     * 删除角色所有 权限
+     *
+     * @param roleId
+     */
+    void delAllMenu(String roleId);
 }

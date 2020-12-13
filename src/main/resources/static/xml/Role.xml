@@ -68,4 +68,9 @@ WHERE r.role_id = #{roleId} and r.del = 1
         )
     </update>
 
+<!--    删除角色所有权限-->
+    <delete id="delAllMenu">
+        delete from menu_role where role_id = #{roleId}
+    </delete>
+
 </mapper>

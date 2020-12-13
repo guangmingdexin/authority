@@ -43,4 +43,11 @@ public interface AccountMapper {
     List<Role> getRoles(String userId);
 
     Account getAccount(String accountId);
+
+    /**
+     * 删除账户所有 角色
+     *
+     * @param accountId 账户 Id
+     */
+    void delAllRole(String accountId);
 }
