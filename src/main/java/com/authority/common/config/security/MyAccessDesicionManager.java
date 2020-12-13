@@ -36,11 +36,6 @@ public class MyAccessDesicionManager implements AccessDecisionManager {
 
         System.out.println(o.toString());
         for (ConfigAttribute attribute : collection) {
-//            if(authentication instanceof AnonymousAuthenticationToken) {
-//                // 表示当前用户没有登陆
-//                // 测试阶段 直接放行
-//                return;
-//            }
 
             System.out.println("请求当前url所需的角色权限： " + attribute.getAttribute());
             if("ROLE_LOGIN".equals(attribute.getAttribute()) && authentication instanceof UsernamePasswordAuthenticationToken) {

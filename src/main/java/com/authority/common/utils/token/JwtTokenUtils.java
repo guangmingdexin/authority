@@ -1,6 +1,7 @@
 package com.authority.common.utils.token;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -56,7 +57,7 @@ public final class JwtTokenUtils {
     }
 
     // 解析token
-    private static Claims getTokenBody(String token) {
+    private static Claims getTokenBody(String token) throws ExpiredJwtException {
         return Jwts.parser()
                 .setSigningKey(SECRET)
                 .parseClaimsJws(token)

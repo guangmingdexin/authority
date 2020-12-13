@@ -1,7 +1,10 @@
 package com.authority.common.filter;
 
 
+import com.authority.common.utils.Msg;
 import com.authority.common.utils.token.JwtTokenUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,14 +39,21 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 return;
             }
             // 如果请求头中有token,则进行解析，并且设置认证信息
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
-            super.doFilterInternal(request, response, chain);
+            try {
+                SecurityContextHolder.getContext().setAuthentication(getAuthentication(tokenHeader));
+                super.doFilterInternal(request, response, chain);
+            }catch (ExpiredJwtException e) {
+                System.out.println("token 过期了！");
+                ObjectMapper mapper = new ObjectMapper();
+                response.getWriter().write(mapper.writeValueAsString(Msg.setResult("401", null, "token 过期，请重新登陆")));
+            }
         }
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(String tokenHeader) {
         String token = tokenHeader.replace(JwtTokenUtils.TOKEN_PREFIX, "");
         String username = JwtTokenUtils.getUsername(token);
+
         String role = JwtTokenUtils.getUserRole(token);
 
         if (username != null) {

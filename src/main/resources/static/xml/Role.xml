@@ -29,10 +29,12 @@
 
     <select id="getRole" parameterType="string" resultMap="RoleToMenu">
 
-select r.role_id, r.role_name, r.create_time, r.role_state, r.role_describe, m.menu_id,
-m.menu_name, m.menu_patten, m.menu_type, m.menu_describe from role r, menu m where menu_id in
-(select menu_id from menu_role where role_id = #{roleId})
-and role_id = #{roleId} and r.del = 1 and m.del = 1
+select r.role_id, r.role_name, r.create_time, r.role_state, r.role_describe,
+m.menu_id,m.menu_name, m.menu_patten, m.menu_type, m.menu_describe
+FROM role r
+LEFT JOIN menu_role mr on r.role_id = mr.role_id
+LEFT JOIN menu m on m.menu_id = mr.menu_id and m.del = 1
+WHERE r.role_id = #{roleId} and r.del = 1
 
     </select>
 
