@@ -9,7 +9,7 @@ import java.util.Date;
  * @Date 2020/12/2 19:07
  * @Version 1.0
  **/
-public class Account extends User{
+public class Account extends User {
 
 
     private String email;
@@ -20,6 +20,7 @@ public class Account extends User{
 
     // 可选 有默认值
     private String avatar;
+
 
     public Account() {
     }
@@ -35,6 +36,7 @@ public class Account extends User{
         this.createTime = createTime;
         this.tel = tel;
         this.avatar = avatar;
+
     }
 
     public String getEmail() {
@@ -68,4 +70,7 @@ public class Account extends User{
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
 }
+
+

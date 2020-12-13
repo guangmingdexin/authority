@@ -10,8 +10,17 @@
 </select>
 
 <!--    获取所有用户-->
+    <resultMap id="UserAccount" type="Account">
+        <id property="userId" column="user_id" />
+        <result property="userName" column="username"/>
+        <result property="email" column="email"/>
+        <result property="userState" column="state"/>
+        <result property="avatar" column="avatar"/>
+        <result property="createTime" column="create_time"/>
+        <result property="tel" column="tet"/>
 
-    <select id="getAllAccount" resultType="Account">
+    </resultMap>
+    <select id="getAllAccount" resultMap="UserAccount">
         select user_id, username, email, state, avatar,create_time, tel from account where del = 1;
     </select>
 

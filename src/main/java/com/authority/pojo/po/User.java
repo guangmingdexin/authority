@@ -9,13 +9,13 @@ package com.authority.pojo.po;
  **/
 public abstract class User {
 
-    private String userId;
+    protected String userId;
 
-    private String userName;
+    protected String userName;
 
-    private String password;
+    protected String password;
 
-    private boolean userState;
+    protected boolean userState;
 
     public User() {
     }
