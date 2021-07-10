@@ -1,10 +1,8 @@
-package com.authority.common.filter;
+package com.authority.common.first.filter;
 
-import com.authority.common.provider.MyAuthenticationFilter;
-import com.authority.common.provider.AccountAuthenticationToken;
-import com.authority.common.utils.Msg;
+import com.authority.common.first.provider.SmsAuthenticationFilter;
+import com.authority.common.first.provider.SmsAuthenticationToken;
 import com.authority.common.utils.login.LoginUtil;
-import com.authority.pojo.po.Account;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,29 +11,34 @@ import org.springframework.security.core.AuthenticationException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
- * @ClassName JWTAccountAuthenticationFilter
- * @Description TODO
+ * @ClassName JWTSmsAuthenticationFilter
  * @Author guangmingdexin
- * @Date 2020/12/5 18:58
+ * @Date 2021/7/5 16:49
  * @Version 1.0
  **/
-public class JWTAccountAuthenticationFilter extends MyAuthenticationFilter {
 
-    private AuthenticationManager authenticationManager;
+public class JWTSmsAuthenticationFilter extends SmsAuthenticationFilter {
 
-    public JWTAccountAuthenticationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-        super.setFilterProcessesUrl("/account/login");
+ //   private AuthenticationManager authenticationManager;
+
+
+//    public JWTSmsAuthenticationFilter(AuthenticationManager authenticationManager) {
+//        this.authenticationManager = authenticationManager;
+//        //super.setFilterProcessesUrl("/sms/login");
+//    }
+
+    public JWTSmsAuthenticationFilter() {
+        super.setFilterProcessesUrl("/sms/login");
     }
+
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
@@ -51,22 +54,24 @@ public class JWTAccountAuthenticationFilter extends MyAuthenticationFilter {
         }
         ObjectMapper objectMapper = new ObjectMapper();
         //
-        Account account = objectMapper.readValue(request.getInputStream(), Account.class);
+        Map sms = objectMapper.readValue(request.getInputStream(), Map.class);
 
-        System.out.println("账户： " + account.getUserName());
-        System.out.println("密码： " + account.getPassword());
-        return authenticationManager.authenticate(new AccountAuthenticationToken(account.getUserName(),
-                account.getPassword(), new ArrayList<>()));
+        System.out.println("tel: " + sms.get("tel"));
+        System.out.println("code:" + sms.get("code"));
+
+        return this.getAuthenticationManager().authenticate(new SmsAuthenticationToken(sms.get("tel"),
+                sms.get("code"), new ArrayList<>()));
 
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        LoginUtil.success(request, response, authResult);
+        LoginUtil.success(response, authResult);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        LoginUtil.fail(request, response, failed);
+        LoginUtil.fail(response, failed);
     }
+
 }

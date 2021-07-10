@@ -18,6 +18,8 @@ public class Account extends User {
 
     private String tel;
 
+    private String code;
+
     // 可选 有默认值
     private String avatar;
 
@@ -71,6 +73,13 @@ public class Account extends User {
         this.avatar = avatar;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }
 
 

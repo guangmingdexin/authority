@@ -32,7 +32,7 @@ import java.util.UUID;
  * @Version 1.0
  **/
 @Service
-@Qualifier("accountUsrService")
+@Qualifier("accountUserService")
 public class AccountUserService implements UserDetailsService {
 
     @Autowired
@@ -49,7 +49,7 @@ public class AccountUserService implements UserDetailsService {
 
         // 通过用户名获取到 用户信息
         Account user = accountMapper.loadUserByUsername(userName);
-        System.out.println("user: " + user);
+
         if(user == null) {
             return new JwtUser();
         }

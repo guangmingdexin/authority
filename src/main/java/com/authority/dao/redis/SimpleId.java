@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.UUID;
 
 /**
  * @ClassName SimpleId
@@ -31,23 +32,25 @@ public class SimpleId implements GenerateId {
     @Override
     public String generateId(Class clazz) {
 
+        return UUID.randomUUID().toString().substring(0,5);
+
         // 获取到 注解属性 名称
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            Annotation[] annotations = field.getAnnotations();
-            for (Annotation annotation : annotations) {
-                // 暂时不考虑多个 Id 的情况
-                if(annotation instanceof Id && ((Id) annotation).isPrimary()) {
-                    fieldName = field.getName();
-                    System.out.println(fieldName);
-                    return deal(clazz, fieldName);
-                }
-            }
-        }
-        // 没有 Id 属性
-        fieldName = "Id";
-        System.out.println(fieldName);
-        return deal(clazz, fieldName);
+//        Field[] fields = clazz.getDeclaredFields();
+//        for (Field field : fields) {
+//            Annotation[] annotations = field.getAnnotations();
+//            for (Annotation annotation : annotations) {
+//                // 暂时不考虑多个 Id 的情况
+//                if(annotation instanceof Id && ((Id) annotation).isPrimary()) {
+//                    fieldName = field.getName();
+//                    System.out.println(fieldName);
+//                    return deal(clazz, fieldName);
+//                }
+//            }
+//        }
+//        // 没有 Id 属性
+//        fieldName = "Id";
+//        System.out.println(fieldName);
+//        return deal(clazz, fieldName);
     }
 
     private synchronized String deal(Class clzz, String s) {
@@ -114,6 +117,5 @@ public class SimpleId implements GenerateId {
 
         return builder.toString();
     }
-
 
 }

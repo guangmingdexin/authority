@@ -1,6 +1,5 @@
-package com.authority.common.provider;
+package com.authority.common.first.provider;
 
-import com.authority.common.provider.AccountAuthenticationToken;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -20,7 +19,7 @@ import java.io.IOException;
  * @Date 2020/12/5 9:56
  * @Version 1.0
  **/
-public class MyAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class AccountAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     /**
      * 设置 默认 用户名
@@ -34,11 +33,11 @@ public class MyAuthenticationFilter extends AbstractAuthenticationProcessingFilt
     private boolean postOnly = true;
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher("/account/login", "POST");
 
-    public MyAuthenticationFilter() {
+    public AccountAuthenticationFilter() {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
     }
 
-    public MyAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public AccountAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER, authenticationManager);
     }
 

@@ -1,9 +1,6 @@
-package com.authority.common.filter;
+package com.authority.common.first.filter;
 
-import com.authority.common.utils.Msg;
 import com.authority.common.utils.login.LoginUtil;
-import com.authority.common.utils.token.JwtTokenUtils;
-import com.authority.pojo.bo.JwtUser;
 import com.authority.pojo.po.Admin;
 import com.authority.pojo.po.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -21,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  *
@@ -30,13 +24,21 @@ import java.util.List;
  *
  * @author 光明的心
  */
-public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private AuthenticationManager authenticationManager;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+   // private AuthenticationManager authenticationManager;
+
+
+//    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+//        this.authenticationManager = authenticationManager;
+//        super.setFilterProcessesUrl("/admins/login");
+//    }
+
+    public JWTAuthenticationFilter() {
         super.setFilterProcessesUrl("/admins/login");
     }
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -71,7 +73,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             User user = mapper.readValue(bytes, Admin.class);
 
-            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(),
+            return this.getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(),
                     user.getPassword(), new ArrayList<>()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,7 +85,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     // 如果验证成功，就生成token并返回
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
-        LoginUtil.success(request, response, authResult);
+        LoginUtil.success(response, authResult);
     }
 
     /**
@@ -98,6 +100,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        LoginUtil.fail(request, response, failed);
+        LoginUtil.fail(response, failed);
     }
 }

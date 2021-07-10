@@ -4,8 +4,13 @@ import com.authority.pojo.vo.MenuToRole;
 import com.authority.pojo.po.Role;
 import com.authority.service.menu.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
@@ -13,6 +18,7 @@ import org.springframework.util.AntPathMatcher;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -25,12 +31,11 @@ import java.util.List;
 @Component
 public class FilterMetadataSource implements FilterInvocationSecurityMetadataSource {
 
-
     @Autowired
     private MenuService menuService;
 
     // 用来实现 ant 风格的 url 匹配
-    AntPathMatcher antPathMatcher =new AntPathMatcher() ;
+    AntPathMatcher antPathMatcher = new AntPathMatcher() ;
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
@@ -38,6 +43,7 @@ public class FilterMetadataSource implements FilterInvocationSecurityMetadataSou
         String requestUrl = ((FilterInvocation) o) .getRequestUrl ();
         System.out.println("requestUrl: " + requestUrl);
 
+        // TODO 如果当前 url 没有配置权限，则认定为默认都可以访问
         List<MenuToRole> allMenus = menuService.getAllMenusToRole();
 
         for (MenuToRole menu : allMenus) {
@@ -55,11 +61,11 @@ public class FilterMetadataSource implements FilterInvocationSecurityMetadataSou
                 System.out.println("查询到的角色： " + Arrays.toString(roleNames));
                 return SecurityConfig.createList(roleNames);
             }
-
         }
         // 登陆即可访问
+
         System.out.println("设置默认访问角色");
-        return SecurityConfig.createList("ROLE_LOGIN");
+        return SecurityConfig.createList("ROLE_ANONYMOUS");
     }
 
     @Override

@@ -19,6 +19,4 @@ public class CROSConfig implements WebMvcConfigurer {
                 .maxAge(1800)
                 .allowedOrigins("*");
     }
-
-
 }

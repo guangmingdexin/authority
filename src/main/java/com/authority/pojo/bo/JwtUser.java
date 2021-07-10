@@ -1,5 +1,6 @@
 package com.authority.pojo.bo;
 
+import com.authority.pojo.po.Account;
 import com.authority.pojo.po.Admin;
 import com.authority.pojo.po.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +26,7 @@ public class JwtUser implements UserDetails {
 
     private boolean enable;
 
+
     private Collection<? extends  GrantedAuthority> authorities;
 
     public JwtUser(User user, List<GrantedAuthority> roles) {
@@ -45,6 +47,7 @@ public class JwtUser implements UserDetails {
 
     public JwtUser() {
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -89,5 +92,9 @@ public class JwtUser implements UserDetails {
     public boolean isEnabled() {
         // 会根据数据库查询
         return enable;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

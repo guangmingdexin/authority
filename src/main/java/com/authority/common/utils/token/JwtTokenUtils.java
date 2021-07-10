@@ -18,7 +18,7 @@ public final class JwtTokenUtils {
     // jwt 的签发者
     private static final String ISS = "guangmingdexin";
     // token过期的时间是3600秒
-    private static final long EXPIRATION = 36000L;
+    public static final long EXPIRATION = 36000L;
 
     // 选择了记住我之后的过期时间为7天
     //private static final long EXPIRATION_REMEMBER = 604800L;
@@ -27,12 +27,12 @@ public final class JwtTokenUtils {
     private static final String ROLE_CLAIMS = "role";
 
     // 创建token
-    public static String createToken(String username, String role) {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put(ROLE_CLAIMS, role);
+    public static String createToken(String uid, String username, String role) {
+
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, SECRET)
-                .setClaims(map)
+                .claim(ROLE_CLAIMS, role)
+                .claim("uid", uid)
                 .setIssuer(ISS)
                 .setSubject(username)
                 .setIssuedAt(new Date())
@@ -49,6 +49,10 @@ public final class JwtTokenUtils {
     // 从token中获取角色
     public static String getUserRole(String token) {
         return (String) getTokenBody(token).get(ROLE_CLAIMS);
+    }
+
+    public static String getUserId(String token) {
+        return (String)getTokenBody(token).get("uid");
     }
 
     // 是否过期

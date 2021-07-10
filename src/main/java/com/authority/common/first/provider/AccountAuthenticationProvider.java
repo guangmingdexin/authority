@@ -1,15 +1,13 @@
-package com.authority.common.provider;
+package com.authority.common.first.provider;
 
 import com.authority.pojo.bo.JwtUser;
 import com.authority.service.user.account.AccountUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsChecker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -24,8 +22,7 @@ import java.util.Collection;
  * @Version 1.0
  **/
 @Component
-public
-class AccountAuthenticationProvider implements AuthenticationProvider {
+public class AccountAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private AccountUserService accountUserService;
@@ -33,7 +30,7 @@ class AccountAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private UserDetailsChecker userDetailsChecker = new UserDetailsCheck();
+    private UserDetailsChecker userDetailsChecker = new AccountAuthenticationCheck();
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -41,10 +38,10 @@ class AccountAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
         JwtUser userDetails = (JwtUser)accountUserService.loadUserByUsername(username);
 
+
         if(userDetails.getUsername() == null || password == null || username == null) {
             throw new BadCredentialsException("用户名，密码错误！");
         }
-
         userDetailsChecker.check(userDetails);
         if(passwordEncoder.matches(password, userDetails.getPassword())) {
             // 用户名 密码验证成功

@@ -21,7 +21,8 @@ import java.io.IOException;
 @Component
 public class AccessDenied implements AccessDeniedHandler {
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
-        response.getWriter().write(new ObjectMapper().writeValueAsString(Msg.setResult("403", null, "权限不足！")));
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException {
+        System.out.println("msg:" + e.getMessage());
+        response.getWriter().write(new ObjectMapper().writeValueAsString(Msg.setResult("403", null, e.getMessage())));
     }
 }

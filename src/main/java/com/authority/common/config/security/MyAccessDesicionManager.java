@@ -7,6 +7,7 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -36,6 +37,10 @@ public class MyAccessDesicionManager implements AccessDecisionManager {
         for (ConfigAttribute attribute : collection) {
 
             System.out.println("请求当前url所需的角色权限： " + attribute.getAttribute());
+            if("ROLE_ANONYMOUS".equalsIgnoreCase(attribute.getAttribute())) {
+                return;
+            }
+
             if("ROLE_LOGIN".equals(attribute.getAttribute()) && authentication instanceof UsernamePasswordAuthenticationToken) {
                 return;
             }
@@ -43,13 +48,18 @@ public class MyAccessDesicionManager implements AccessDecisionManager {
             for (GrantedAuthority authority : authes) {
                 System.out.println("当前登陆用户角色： " + authority.getAuthority());
 
+                if("ROLE_ANONYMOUS".equalsIgnoreCase(authority.getAuthority())) {
+                    // 当前还未登陆，抛出异常
+                    System.out.println("not login in");
+                    throw new UsernameNotFoundException("请登陆");
+                }
+
                 if(attribute.getAttribute().equals(authority.getAuthority())) {
                     System.out.println("验证成功，可以进入下一步");
                     return;
                 }
             }
         }
-
         throw new AccessDeniedException ("权限不足");
     }
 

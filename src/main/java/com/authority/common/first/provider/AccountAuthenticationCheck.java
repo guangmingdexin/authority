@@ -1,4 +1,4 @@
-package com.authority.common.provider;
+package com.authority.common.first.provider;
 
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.DisabledException;
@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsChecker;
  * @Date 2020/12/5 10:37
  * @Version 1.0
  **/
-public class UserDetailsCheck implements UserDetailsChecker {
+public class AccountAuthenticationCheck implements UserDetailsChecker {
 
     @Override
     public void check(UserDetails user) {
